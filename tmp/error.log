@@ -1,3 +1,0 @@
-[08-Sep-2016 17:31:36 Europe/Berlin] PHP Notice:  Use of undefined constant SOL_SOCKET - assumed 'SOL_SOCKET' in E:\xampp\htdocs\pocs\sys\core\Server.php on line 22
-[08-Sep-2016 17:31:36 Europe/Berlin] PHP Notice:  Use of undefined constant SO_REUSEADDR - assumed 'SO_REUSEADDR' in E:\xampp\htdocs\pocs\sys\core\Server.php on line 22
-[08-Sep-2016 17:31:36 Europe/Berlin] PHP Fatal error:  Call to undefined function POCS\Core\socket_create() in E:\xampp\htdocs\pocs\sys\core\Socket.php on line 30

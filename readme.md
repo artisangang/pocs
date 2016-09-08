@@ -18,7 +18,9 @@ Copy And Extract the cloned/downloaded archive in pocs under xampp/wampp (Any pr
 Browse http://localhost/pocs/public in mozilla/chrome. You will see below message:
 
 Connecting to server please wait...
+
 Handshake successfully done...
+
 Server: Your are connected to server with #[u57d1850c54390]... 
 
 
@@ -28,7 +30,9 @@ Open new browser (if first one is mozilla then browse same link in chrome), Brow
 
 
 Connecting to server please wait...
+
 Handshake successfully done...
+
 Server: Your are connected to server with #[u57d1852519be7]...
 
 
