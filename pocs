@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * PHP Open Chat Server - A PHP Framework For Chating Applications
+ *
+ * @package POCS
+ * @version 1.0
+ * @author Harcharan Singh <artisangang@gmail.com>, Nitin Mehra <nitinmehra@gmail.com>
+ * @link https://github.com/artisangang/pocs
+ */
+
+// base directory path
+define('BASEDIR', __DIR__);
+
+// pocs version
+define('VER', '1.0');
+
+// turn on error reporting
+error_reporting(E_ALL);
+
+// set logging
+ini_set("log_errors", 1);
+ini_set("error_log", BASEDIR . "/tmp/error.log");
+
+// get autoloader in
+$autoload = require BASEDIR . '/sys/autoloader.php';
+
+// get helpers in
+require BASEDIR . '/sys/helpers.php';
+
+// register directories in autoloader
+$autoload->add('POCS\\Core\\', BASEDIR . '/sys/core/');
+$autoload->add('POCS\\App\\', BASEDIR . '/app/');
+$autoload->add('POCS\\Lib\\', BASEDIR . '/lib/');
+
+// register autoloader
+$autoload->register();
+
+// create console request
+$console = \POCS\Core\Console::instance($argv);
+
+// unset default cli $argb
+unset($argv);
+
+// create config
+$config = \POCS\Core\Config::instance();
+
+// turn off error reporting if debug is false or -d flag is not present
+if (!$console->flags('d') && !$config->get('debug', true)) {
+    error_reporting(0);
+}
+
+
+// create server instance
+$server = new \POCS\Core\Server($console);
+
+// lets start server
+$server->lift();
+
+
