@@ -15,9 +15,11 @@ class ServiceProvider implements ServiceInterface {
 
 		$connection = new Connection();	
 
-		$query = new QueryBuilder($connection);
+		return function () use($connection) {
+			return new QueryBuilder($connection);
+		};
 
-		return $query;
+		
 
 	}
 

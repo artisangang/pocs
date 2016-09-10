@@ -57,7 +57,7 @@ class Socket {
 
         $this->server->setClient($client);
         $this->socketConnections[$client->getId()] = $socket;
-        Console::log("Client connected with id: {$client->getId()}.");
+        
 
 
         $this->server->getClientController()->connecting($client->getId());
@@ -67,7 +67,7 @@ class Socket {
 
     protected function disconnect(Client $client) {
 
-        Console::log("Disconnecting client #{$client->getId()}.");
+
 
         $client->setIsConnected(false);
 
@@ -82,7 +82,7 @@ class Socket {
 
         $this->server->getClientController()->disconnected($client->getId(), $client->requestedResource);
 
-        Console::log("Client #{$client->getId()} disconnected.");
+       
 
 
     }
@@ -153,10 +153,15 @@ class Socket {
         socket_write($client->getSocket(),$handshakeResponse,strlen($handshakeResponse));
 
         $client->setHandshake(true);
-        Console::log("Handshake done with #{$client->getId()}");
+       
+        $response = $this->server->getClientController()->connected($client->getId(), $client->requestedResource);
 
-        $this->server->getClientController()->connected($client->getId(), $client->requestedResource);
-        $this->send($client, "Your are connected to server with #[{$client->getId()}]...");
+        if ($response === Response::DISCONNECT) {
+            $this->disconnect($client);
+        } elseif ($response) {
+            $this->send($client, $response);
+        }
+        
     }
 
 
@@ -209,7 +214,7 @@ class Socket {
                         continue;
                     }
 
-                    Console::log("Doing the handshake with {$client->getId()}");
+                    Console::log("Doing handshake with #{$client->getId()}");
                     $this->handshake($client, $buffer);
 
                 } elseif ($bytes === 0) {
@@ -224,14 +229,15 @@ class Socket {
 
                     $payloads = json_decode($text, true);
 
-                    $this->server->getClientController()->received($payloads);
-
-                    if (isset($payloads['cid'], $payloads['uid'], $payloads['text'])) {
-                        if ($client = $this->server->getClientById($payloads['cid'])) {
-                            Console::log('Receiver found...');
-                            $this->send($client, $payloads);
-                        }
-                    }
+                    $response = $this->server->getClientController()->received($client->getId(), $payloads);
+                       if ($response === Response::DISCONNECT) {
+                            $this->disconnect($client);
+                        } elseif (is_array($response)) {
+                          if ($client = $this->server->getClientById($response['cid'])) {
+                                Console::log('Receiver found...');
+                                $this->send($client, $response);
+                            }
+                      }  
 
                 }
             }
@@ -270,9 +276,10 @@ class Socket {
             } else {
                 $payloads = ['uid' => $client->getId(), 'text' => $message];
             }
-            $this->server->getClientController()->sending($payloads);
+            $this->server->getClientController()->sending($client->getId(),  $payloads);
             $message = $this->encode(json_encode($payloads));
             @socket_write($client->getSocket(), $message, strlen($message));
+            $this->server->getClientController()->sent($client->getId(), $payloads);
         } else {
             // User has not yet performed their handshake.  Store for sending later.
             $this->pendingMessages[$client->getId()][] = $message;

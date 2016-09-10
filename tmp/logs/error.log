@@ -25,3 +25,9 @@ Stack trace:
 [09-Sep-2016 18:16:32 Asia/Kolkata] PHP Fatal error:  Class 'POCS\Core\PDO\Config' not found in E:\xampp\htdocs\pocs\pocs on line 46
 [09-Sep-2016 18:16:44 Asia/Kolkata] PHP Fatal error:  Class 'POCS\Lib\PDO\Connection' not found in E:\xampp\htdocs\pocs\pocs on line 53
 [09-Sep-2016 18:26:17 Asia/Kolkata] PHP Fatal error:  Class 'POCS\Lib\PDO\Connection' not found in E:\xampp\htdocs\pocs\pocs on line 53
+[10-Sep-2016 15:48:40 Europe/Berlin] PHP Parse error:  syntax error, unexpected '}' in E:\xampp\htdocs\pocs\sys\core\ClientController.php on line 44
+[10-Sep-2016 15:51:17 Europe/Berlin] PHP Fatal error:  Declaration of POCS\Core\ClientController::sending() must be compatible with POCS\Core\ClientInterface::sending($payloads) in E:\xampp\htdocs\pocs\sys\core\ClientController.php on line 3
+[10-Sep-2016 15:55:20 Europe/Berlin] PHP Parse error:  syntax error, unexpected '"' in E:\xampp\htdocs\pocs\sys\core\ClientController.php on line 15
+[10-Sep-2016 15:59:56 Europe/Berlin] PHP Notice:  Undefined variable: payloads in E:\xampp\htdocs\pocs\sys\core\ClientController.php on line 41
+[10-Sep-2016 16:00:29 Europe/Berlin] PHP Notice:  Undefined variable: payloads in E:\xampp\htdocs\pocs\sys\core\ClientController.php on line 41
+[10-Sep-2016 16:17:56 Europe/Berlin] PHP Fatal error:  Class 'POCS\App\Console' not found in E:\xampp\htdocs\pocs\app\ClientController.php on line 10

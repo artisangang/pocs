@@ -6,6 +6,7 @@ return [
     'mode' => 'prod',
     'debug' => false,
     'connection' => 'simpleChat',
+    'controller' => ['client' => \POCS\App\ClientController::class],
     'connections' => [
         'simpleChat' => [
             'adapter' => 'pdo',

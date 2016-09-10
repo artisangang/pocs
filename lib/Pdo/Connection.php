@@ -37,13 +37,19 @@ class Connection {
         $password = array_get($credentials, 'password', '');
 
         $this->conn[$key] = new \PDO("mysql:host={$host};dbname={$db}", $username, $password);
+        $this->conn[$key]->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
 
-    public function has($key) {
+    public function exists($key) {
         return isset($this->conn[$key]);
     }
 
-    public function conn($key = 'connection') {
+    public function get($key = null) {
+
+        if (is_null($key)) {
+            $key = config('connection');
+        }
+
         if (isset($this->conn[$key])) {
             return $this->conn[$key];
         }

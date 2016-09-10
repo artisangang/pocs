@@ -21,7 +21,14 @@ $service = \POCS\Core\Service::instance([\POCS\Lib\PDO\ServiceProvider::class]);
 // create config
 $config = \POCS\Core\Config::instance();
 
-//$conn = new \POCS\Lib\PDO\Connection();
 
-echo \POCS\Core\Service::DB()->all();
 
+
+
+
+ $data = [
+               'sender_id' => 1,
+               'receiver_id' => 2,
+               'message' => "test"
+           ];
+           \POCS\Core\Service::DB()->table('chat_history')->insert($data);

@@ -36,7 +36,7 @@ class Service {
 			throw new \RuntimeException("Unknown service $alias");
 		}
 
-		return $this->services[$alias];
+		return ($this->services[$alias] instanceof \Closure) ? $this->services[$alias]() : $this->services[$alias];
 
 	}
 

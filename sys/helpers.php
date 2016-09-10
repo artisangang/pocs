@@ -38,3 +38,13 @@ function config($key, $default = null)
 
     return \POCS\Core\Config::instance()->get($key, $default);
 }
+
+function str_studly($value) {
+    $value = ucwords(str_replace(array('-', '_'), ' ', $value));
+    return str_replace(' ', '', $value);
+}
+
+function str_camel($value, $lower = true) {
+    $value = str_studly($value);
+    return ($lower === true) ? lcfirst($value) : $value;
+}

@@ -28,6 +28,22 @@ class Server
 
         $controller = config('controller.client', ClientController::class);
 
+
+
+        if ($console->options('controller') !=  false) {
+
+            $controllerOpt = $console->options('controller');
+
+            if ($controllerOpt === 'default') {
+                $controller = ClientController::class;
+            } else {
+                $controller = $controllerOpt;
+            }
+
+
+
+        }
+
         $this->clientController = new $controller();
 
         if (!$this->clientController instanceof ClientInterface) {

@@ -50,11 +50,17 @@ if (!$console->flags('d') && !$config->get('debug', false)) {
     error_reporting(0);
 }
 
+// get list of provisers
+$providers = config('providers', []);
+
+if (!empty($providers)) {
+	// register service providers
+	\POCS\Core\Service::instance($providers);
+}
 
 // create server instance
 $server = new \POCS\Core\Server($console);
 
 // lets start server
 $server->lift();
-
 
