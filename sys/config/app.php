@@ -13,7 +13,7 @@ return [
             'port' => '3306',
             'username' => 'root',
             'password' => '',
-            'dbname' => 'simpleChat'
+            'dbname' => 'pocs'
         ]
     ],
     'env' => [
@@ -33,6 +33,8 @@ return [
             'debug' => false,
         ]
     ],
-
+    'providers' => [
+        \POCS\Lib\PDO\ServiceProvider::class
+    ]
 
 ];
