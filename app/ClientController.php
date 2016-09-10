@@ -75,6 +75,8 @@ class ClientController implements ClientInterface {
 
            $payloads['cid'] = $receiver->client_id;
 
+           unset($payloads['uid']);
+
            Service::DB()->table('chat_history')->insert($data);
         
            return $payloads;

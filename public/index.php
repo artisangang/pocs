@@ -98,6 +98,7 @@ if ($_POST) {
             width: 100%;
             height: 300px;
             border: 1px solid #7F9DB9;
+            overflow-x: scroll;
         }
 
         #msg {
@@ -246,7 +247,9 @@ if ($_POST) {
 
                 var payloads = JSON.parse(e.data);
 
-                uid = payloads.uid;
+                if (typeof uid == 'undefined') {
+                    uid = payloads.uid;
+                }
 
                 var from = (typeof payloads.from != 'undefined') ? payloads.from : payloads.cid;
 
@@ -256,6 +259,8 @@ if ($_POST) {
 
                 var message = from +': ' + payloads.text;
                 log(message);
+
+                $("#log").scrollTop($("#log")[0].scrollHeight);
 
             };
 
@@ -337,6 +342,7 @@ if ($_POST) {
             socket.send(JSON.stringify(payload));
 
             log('you: ' + msg);
+            $("#log").scrollTop($("#log")[0].scrollHeight);
 
         } catch (ex) {
             log(ex);
