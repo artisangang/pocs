@@ -272,7 +272,7 @@ class Socket {
 
             if (is_array($message)) {
                 // uid is sender and cid is receiver here
-                $payloads = ['uid' => $client->getId(), 'cid' => $message['uid'], 'text' => $message['text']];
+                $payloads = $message;
             } else {
                 $payloads = ['uid' => $client->getId(), 'text' => $message];
             }

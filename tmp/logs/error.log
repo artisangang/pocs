@@ -31,3 +31,4 @@ Stack trace:
 [10-Sep-2016 15:59:56 Europe/Berlin] PHP Notice:  Undefined variable: payloads in E:\xampp\htdocs\pocs\sys\core\ClientController.php on line 41
 [10-Sep-2016 16:00:29 Europe/Berlin] PHP Notice:  Undefined variable: payloads in E:\xampp\htdocs\pocs\sys\core\ClientController.php on line 41
 [10-Sep-2016 16:17:56 Europe/Berlin] PHP Fatal error:  Class 'POCS\App\Console' not found in E:\xampp\htdocs\pocs\app\ClientController.php on line 10
+[10-Sep-2016 19:15:11 Europe/Berlin] PHP Notice:  Trying to get property of non-object in E:\xampp\htdocs\pocs\app\ClientController.php on line 67

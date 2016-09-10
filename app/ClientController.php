@@ -15,8 +15,8 @@ class ClientController implements ClientInterface {
     }
 
     // user is now connected
-    public function connected($id, $resource) {
-         Console::log("Handshake done with #{$id}");
+    public function connected($cid, $resource) {
+         Console::log("Handshake done with #{$cid}");
         
 
         list(, $user, $id) = explode('/', $resource, 3);
@@ -28,10 +28,10 @@ class ClientController implements ClientInterface {
           return Response::DISCONNECT;
         }
 
-        Service::DB()->table('users')->where('id', $user->id)->update(['client_id' => $id]);
+        Service::DB()->table('users')->where('id', $user->id)->update(['client_id' => $cid]);
 
 
-        return "Your are connected to server with #[{$id}]...";
+        return "Your are connected to server with #[{$cid}]...";
     }
 
     // user is disconnected
@@ -59,15 +59,19 @@ class ClientController implements ClientInterface {
 
         Console::log("Recived data : " . json_encode($payloads));
 
-        if (isset($payloads['cid'], $payloads['uid'], $payloads['text'])) {
+        if (isset($payloads['receiver'], $payloads['uid'], $payloads['text'])) {
            
            $receiver = Service::DB()->from('users')->where('id', $payloads['receiver'])->first();
            $sender = Service::DB()->from('users')->where('client_id', $payloads['uid'])->first();
+
            $data = [
                'sender_id' => $sender->id,
                'receiver_id' => $receiver->id,
-               'message' => $payloads['text']
+               'message' => $payloads['text'],
+
            ];
+
+           $payloads['from'] = $sender->username;
 
            $payloads['cid'] = $receiver->client_id;
 

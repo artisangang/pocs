@@ -232,7 +232,7 @@ if ($_POST) {
 
  
     function init() {
-        var host = "ws://127.0.0.1:9000/user/<?= $user->id; ?>";
+        var host = "ws://127.0.0.1:9000/user/<?= $uid; ?>";
         try {
             socket = new WebSocket(host);
             log('Connecting to server please wait...');
