@@ -45,12 +45,16 @@ class Config
 
             $env = Console::instance()->options('env', array_get($config, 'mode', 'dev'));
 
-            $this->config['mode'] = $env;
-            if (!empty($this->config['env'][$env])) {
-
-                $this->config = array_merge($this->config, $this->config['env'][$env]);
+            if (!isset($this->config['env'][$env])) {
+                throw new \InvalidArgumentException("Invalid environment {$env}");
             }
 
+            $this->config['mode'] = $env;
+
+            // merge with env config
+            $this->config = array_merge($this->config, $this->config['env'][$env]);
+
+            // remove env array from config
             unset($this->config['env']);
 
         }
@@ -83,10 +87,7 @@ class Config
      */
     public function get($key, $default = null)
     {
-        if (!empty($this->config[$key])) {
-            $default = $this->config[$key];
-        }
-        return $default;
+        return array_get($this->config, $key, $default);
     }
 
 }

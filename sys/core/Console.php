@@ -36,6 +36,8 @@ class Console
     private function __construct(array $arguments)
     {
 
+        set_exception_handler([$this, 'exception']);
+
 
         $this->_originalArguments = $arguments;
 
@@ -149,15 +151,25 @@ class Console
 
     public static function log($message) {
 
+        $console = static::instance();
         $log =  date('[Y-m-d H:i:s] ') . "{$message}\n";
 
-        if (config('verbose', true) === true) {
+        if (config('verbose', $console->flags('v', false)) === true) {
             echo $log;
         }
 
         if (config('debug', true) === true) {
             file_put_contents(BASEDIR . '/tmp/logs/pocs.log', $log, FILE_APPEND);
         }
+    }
+
+    public function info($info) {
+        echo "$info\n";
+    }
+
+    public function exception($exception) {
+        $type = get_class($exception);
+        echo "[{$type}] : {$exception->getMessage()}.\n";
     }
 
 }

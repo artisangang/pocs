@@ -19,6 +19,7 @@ class Client {
         return $this->id;
     }
 
+
     public function getSocket() {
         return $this->socket;
     }

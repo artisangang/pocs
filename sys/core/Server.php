@@ -12,17 +12,38 @@ class Server
 
     protected $clients;
 
+    protected $clientController;
+
     public function __construct(Console $console)
     {
 
-        $this->ip = config('ip', '127.0.0.1');
-        $this->port = config('port', 9000);
+
+        $console->info('POCS (PHP Open Chat Server) version: ' . VER);
+        $console->info('By World Open Source Development Community');
+        $console->info('Author: Harcharan Singh<artisangang@gmail.com>');
+        $console->info('Contributors: Nitin Mehra <mb9034215256@gmail.com>');
+
+        $this->ip = $console->options('ip', config('ip', '0.0.0.0'));
+        $this->port = $console->options('port', config('port', 9000));
+
+        $controller = config('controller.client', ClientController::class);
+
+        $this->clientController = new $controller();
+
+        if (!$this->clientController instanceof ClientInterface) {
+            throw new \RuntimeException('Client controller is invalid');
+        }
+
 
         $this->console = $console;
         $this->socket = new Socket($this);
 
        $this->socket->create();
 
+    }
+
+    public function getClientController() {
+        return $this->clientController;
     }
 
 
@@ -75,7 +96,7 @@ class Server
     public function lift()
     {
 
-        Console::log("Listening on {$this->ip}:{$this->port}...");
+        $this->console->info("Listening on {$this->ip}:{$this->port}...");
 
         while(true) {
             // cycle

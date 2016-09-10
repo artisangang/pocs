@@ -43,17 +43,24 @@ class Socket {
 
     protected function connect($socket) {
 
-        $client = new Client(uniqid('u'), $socket);
+
+
+        $client = new Client(uniqid('C'), $socket);
         $ip = $this->server->getIp();
         $port = $this->server->getPort();
         //display information about the client who is connected
         if(socket_getpeername($socket , $ip, $port))
         {
-            Console::log("Client connected with id: {$client->getId()}.");
+
         }
 
         $this->server->setClient($client);
         $this->socketConnections[$client->getId()] = $socket;
+        Console::log("Client connected with id: {$client->getId()}.");
+
+
+        $this->server->getClientController()->connecting($client->getId());
+
 
     }
 
@@ -72,7 +79,11 @@ class Socket {
 
         $this->server->removeClient($client);
 
+        $this->server->getClientController()->disconnected($client->getId(), $client->requestedResource);
+
         Console::log("Client #{$client->getId()} disconnected.");
+
+
     }
 
     public function handshake($client, $buffer) {
@@ -143,6 +154,7 @@ class Socket {
         $client->setHandshake(true);
         Console::log("Handshake done with #{$client->getId()}");
 
+        $this->server->getClientController()->connected($client->getId(), $client->requestedResource);
         $this->send($client, "Your are connected to server with #[{$client->getId()}]...");
     }
 
@@ -211,6 +223,8 @@ class Socket {
 
                     $payloads = json_decode($text, true);
 
+                    $this->server->getClientController()->received($payloads);
+
                     if (isset($payloads['cid'], $payloads['uid'], $payloads['text'])) {
                         if ($client = $this->server->getClientById($payloads['cid'])) {
                             Console::log('Receiver found...');
@@ -251,12 +265,12 @@ class Socket {
 
             if (is_array($message)) {
                 // uid is sender and cid is receiver here
-                $payloads = json_encode(['uid' => $client->getId(), 'cid' => $message['uid'], 'text' => $message['text']]);
+                $payloads = ['uid' => $client->getId(), 'cid' => $message['uid'], 'text' => $message['text']];
             } else {
-                $payloads = json_encode(['uid' => $client->getId(), 'text' => $message]);
+                $payloads = ['uid' => $client->getId(), 'text' => $message];
             }
-
-            $message = $this->encode($payloads);
+            $this->server->getClientController()->sending($payloads);
+            $message = $this->encode(json_encode($payloads));
             @socket_write($client->getSocket(), $message, strlen($message));
         } else {
             // User has not yet performed their handshake.  Store for sending later.
@@ -264,7 +278,7 @@ class Socket {
         }
     }
 
-    function encode($message, $messageType='text') {
+    private function encode($message, $messageType='text') {
 
         switch ($messageType) {
             case 'continuous':

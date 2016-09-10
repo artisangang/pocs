@@ -99,7 +99,6 @@
             <input id="msg" type="textbox" onkeypress="onkey(event)" placeholder="Type your message here...">
         </div>
         <br><br>
-        <button onclick="connect()">Connect</button>
         <button onclick="send()">send</button>
         <button onclick="quit()">Quit</button>
     </div>
@@ -121,7 +120,7 @@
     }
 
     function init() {
-        var host = "ws://192.168.1.103:9100";
+        var host = "ws://127.0.0.1:9100";
         try {
             socket = new WebSocket(host);
             log('Connecting to server please wait...');

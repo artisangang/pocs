@@ -2,8 +2,8 @@
 
 return [
     'ip' => '127.0.0.1',
-    'port' => 9100,
-    'mode' => 'dev',
+    'port' => 9000,
+    'mode' => 'prod',
     'debug' => false,
     'connection' => 'simpleChat',
     'connections' => [
@@ -24,8 +24,8 @@ return [
         ],
         'dev' => [
             'connection' => 'simpleChatDev',
-            'debug' => true,
             'port' => 9100,
+            'debug' => true,
         ],
         'prod' => [
             'connection' => 'simpleChat',

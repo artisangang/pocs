@@ -33,15 +33,10 @@ class Autoloader
 
             $len = strlen($prefix);
 
-            if (strncmp($prefix, $class, $len) !== 0) {
-                // no, move to the next registered autoloader
-                return;
-            }
-
             $relative_class = substr($class, $len);
 
-
             $file = $path . str_replace('\\', '/', $relative_class) . '.php';
+
 
             // if the file exists, require it
             if (is_readable($file)) {

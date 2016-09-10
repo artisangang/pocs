@@ -1,6 +1,6 @@
 <?php namespace POCS\App;
 
-use POCS\Core\Controller;
+use POCS\Core\ClientController as Controller;
 
 class ClientController extends Controller {
 
