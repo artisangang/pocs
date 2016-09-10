@@ -19,16 +19,17 @@ return [
     'env' => [
         'test' => [
             'connection' => 'simpleChatTest',
-            'port' => 9300,
+            'port' => 9200,
             'debug' => false,
         ],
         'dev' => [
             'connection' => 'simpleChatDev',
             'debug' => true,
+            'port' => 9100,
         ],
         'prod' => [
             'connection' => 'simpleChat',
-            'port' => 9200,
+            'port' => 9000,
             'debug' => false,
         ]
     ],

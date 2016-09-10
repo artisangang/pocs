@@ -15,8 +15,8 @@ class Server
     public function __construct(Console $console)
     {
 
-        $this->ip = config('ip', '0.0.0.0');
-        $this->port = config('port', 1300);
+        $this->ip = config('ip', '127.0.0.1');
+        $this->port = config('port', 9000);
 
         $this->console = $console;
         $this->socket = new Socket($this);
