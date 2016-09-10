@@ -50,7 +50,6 @@ if (!$console->flags('d') && !$config->get('debug', false)) {
     error_reporting(0);
 }
 
-$db = new POCS\Lib\PDO\Connection();
 
 // create server instance
 $server = new \POCS\Core\Server($console);
