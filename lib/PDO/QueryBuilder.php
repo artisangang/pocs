@@ -120,6 +120,11 @@ class QueryBuilder {
 		$limit['skip'] = $val;
 	}
 
+	public function orderBy($field, $order = 'desc') {
+		array_push($this->order, ['field' => $field, 'order' => $order]);
+		return $this;
+	}
+
 	public function all() {
 		$query = $this->process();
 
@@ -184,7 +189,7 @@ class QueryBuilder {
 
 		$select = implode(',', $this->select);
 		$where = $this->processWhere();
-		$order = '';
+		$order = $this->processOrder();
 		$group = '';
 		$limit = $this->processLimit();
 
@@ -220,6 +225,20 @@ class QueryBuilder {
 		}
 
 		return trim(trim($build, 'and'), 'or');
+	}
+
+	protected function processOrder() {
+		if (empty($this->order)) {
+			return;
+		}
+
+		$build = 'order by';
+
+		foreach ($this->order as $order) {
+			$build .= " {$order['field']}  {$order['order']}";
+		}
+
+		return $build;
 	}
 
 	protected function processInsert() {

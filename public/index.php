@@ -28,7 +28,7 @@ if (!empty($_GET['get'])) {
 
 
 
-        $messages = \POCS\Core\Service::DB()->query("select chat_history.*, sender.id , sender.username as sender_username, receiver.id , receiver.username as receiver_username from chat_history left JOIN users as sender on chat_history.sender_id = sender.id left JOIN users as receiver on chat_history.receiver_id = receiver.id where (chat_history.receiver_id = ? and chat_history.sender_id = ?) or (chat_history.receiver_id = ? and chat_history.sender_id = ?)  limit 0,10", [$_GET['user'], $_GET['receiver'], $_GET['receiver'], $_GET['user']]);
+        $messages = \POCS\Core\Service::DB()->query("select chat_history.*, sender.id , sender.username as sender_username, receiver.id , receiver.username as receiver_username from chat_history left JOIN users as sender on chat_history.sender_id = sender.id left JOIN users as receiver on chat_history.receiver_id = receiver.id where (chat_history.receiver_id = ? and chat_history.sender_id = ?) or (chat_history.receiver_id = ? and chat_history.sender_id = ?)  order by chat_history.created_at desc limit 0,10", [$_GET['user'], $_GET['receiver'], $_GET['receiver'], $_GET['user']]);
 
 
 
@@ -227,59 +227,14 @@ if ($_POST) {
                     }
                 }
 
-                // test 
-
-                setTimeout(function () {
-                    testing();
-                }, 10000);
+               
 
             }
 
         });
     });
 
-    function testing() {
-         var x = Math.floor((Math.random() * 1000) + 1000);
-         setTimeout(function () {
-
-           /* $.ajax({
-            url:'http://www.randomtext.me/api/lorem/p-1/8-21',
-            type:'get',
-            cache:true,
-            success: function (o) {
-
-                if (o.text_out) {
-                   var text = $(o.text_out).text();*/
-
-                   var s = Math.floor((Math.random() * 60) + 1);
-
-                   var e = Math.floor((Math.random() * 70) + 40);
-
-                   var text = "Lorem ipsum odio ornare placerat risus tempor, nisi purus venenatis ad fringilla porttitor adipiscing, netus curabitur dui odio nullam.".substring(s,e);
-                   
-                   send(text);
-                   /*
-
-                }
-
-
-
-            }
-
-            
-
-        }).done(function () {
-             testing();
-        });*/
-
-        testing();
-
-
-         }, x);
-
-         
-    }
-
+  
  
     function init() {
         var host = "ws://127.0.0.1:9000/user/<?= $uid; ?>";
