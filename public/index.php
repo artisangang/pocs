@@ -226,10 +226,59 @@ if ($_POST) {
                         log(o[i].sender_username + ': ' + o[i].message);
                     }
                 }
+
+                // test 
+
+                setTimeout(function () {
+                    testing();
+                }, 10000);
+
             }
 
         });
     });
+
+    function testing() {
+         var x = Math.floor((Math.random() * 1000) + 1000);
+         setTimeout(function () {
+
+           /* $.ajax({
+            url:'http://www.randomtext.me/api/lorem/p-1/8-21',
+            type:'get',
+            cache:true,
+            success: function (o) {
+
+                if (o.text_out) {
+                   var text = $(o.text_out).text();*/
+
+                   var s = Math.floor((Math.random() * 60) + 1);
+
+                   var e = Math.floor((Math.random() * 70) + 40);
+
+                   var text = "Lorem ipsum odio ornare placerat risus tempor, nisi purus venenatis ad fringilla porttitor adipiscing, netus curabitur dui odio nullam.".substring(s,e);
+                   
+                   send(text);
+                   /*
+
+                }
+
+
+
+            }
+
+            
+
+        }).done(function () {
+             testing();
+        });*/
+
+        testing();
+
+
+         }, x);
+
+         
+    }
 
  
     function init() {
@@ -312,24 +361,29 @@ if ($_POST) {
 
     }
 
-    function send() {
-        var txt, msg;
-        txt = $("#msg");
-        msg = txt.val();
-        
-        if (!receiver) {
-            alert("Please select user first");
-            return;
+    function send(message) {
+
+        if (typeof message == 'undefined') {
+            var txt, msg;
+            txt = $("#msg");
+            msg = txt.val();
+            
+            if (!receiver) {
+                alert("Please select user first");
+                return;
+            }
+
+            if (!msg) {
+                alert("Message can not be empty");
+                return;
+            }
+
+
+            txt.value = "";
+            txt.focus();
+        } else {
+            msg = message;
         }
-
-        if (!msg) {
-            alert("Message can not be empty");
-            return;
-        }
-
-
-        txt.value = "";
-        txt.focus();
 
         try {
             var payload = {
@@ -348,6 +402,9 @@ if ($_POST) {
             log(ex);
         }
     }
+
+
+
     function quit() {
         if (socket != null) {
             log("Goodbye!");
