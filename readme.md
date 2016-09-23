@@ -7,7 +7,6 @@ POCS is a php framework to create chatting/instant messaging application.
 - PHP >= 5.6.4
 - WebSocket Supported Browser
 
-**Note: make sure php_sockets extension is enabled.**
 
 ## Options
 
@@ -32,16 +31,6 @@ Browse http://localhost/pocs/public in mozilla/chrome.
 
 **Use credentials: username: harry and password: 123456**
 
-You will see below message after logging in (You can also skip login and move directly to communication panel by using user id in  query string: http://localhost/pocs/public?user=1):
-
-Connecting to server please wait...
-
-Handshake successfully done...
-
-Server: Your are connected to server with #[u57d1850c54390]... 
-
-
-Now u57d1850c54390 is you client id.
 
 Open new browser (if first one is mozilla then browse same link in chrome), Browse http://localhost/pocs/public. 
 
@@ -50,13 +39,6 @@ Open new browser (if first one is mozilla then browse same link in chrome), Brow
 You will See below message:
 
 
-Connecting to server please wait...
-
-Handshake successfully done...
-
-Server: Your are connected to server with #[u57d1852519be7]...
-
-
-Now new client is connected to server with id u57d1852519be7. You can communicate from one browser to another vice-versa by selecting user from (Users list will be displayed in right side of communication panel) right side. (Mozilla to Chrome - Chrome to Mozilla).
+You can communicate from one browser to another vice-versa by selecting user from (Users list will be displayed in right side of communication panel) right side. (Mozilla to Chrome - Chrome to Mozilla).
 
 For communication just click to select user from users list and type you message in message input, then click send or press enter.
