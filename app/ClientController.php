@@ -1,89 +1,66 @@
 <?php namespace POCS\App;
 
-use POCS\Core\ClientInterface;
+use POCS\Core\ConnectionInterface;
 
-use POCS\Core\Console;
+use POCS\Core\Console\IO as Log;
 
 use POCS\Core\Service;
 
-class ClientController implements ClientInterface {
+use \POCS\Core\Connection;
+
+class ClientController implements ConnectionInterface {
 
 
     // user is connecting
-    public function connecting($id) {       
-        Console::log("Client connecting with id: {$id}.");
+    public function connected(Connection $connection) {  
+      
     }
 
-    // user is now connected
-    public function connected($cid, $resource) {
-         Console::log("Handshake done with #{$cid}");
-        
-
-        list(, $user, $id) = explode('/', $resource, 3);
-
-        $user = Service::DB()->from('users')->where('id', $id)->first();
-        
-
-        if (!$user) {
-          return Response::DISCONNECT;
-        }
-
-        Service::DB()->table('users')->where('id', $user->id)->update(['client_id' => $cid]);
-
-
-        return "Your are connected to server with #[{$cid}]...";
-    }
+   
 
     // user is disconnected
-    public function disconnected($id, $resource) {
-         Console::log("Client #{$id} disconnected.");
+    public function disconnected($connection) {
+         Log::debug("Client #{$connection->resourceId()} disconnected.");
     }
     
-    // receiving data
-    public function receiving($id, $payloads) {
-
-    }
-
-    // user sending data
-    public function sending($id, $payloads) {
-        Console::log("sending data : " . json_encode($payloads));
-    }
-
-    // user data sent
-    public function sent($id, $payload) {
-
-    }
-
+   
     // user received some data
-    public function received($id, $payloads) {
+    public function received(Connection $connection) {
 
-        Console::log("Recived data : " . json_encode($payloads));
+      $payload = $connection->payloads();
 
-        if (isset($payloads['receiver'], $payloads['uid'], $payloads['text'])) {
-           
-           $receiver = Service::DB()->from('users')->where('id', $payloads['receiver'])->first();
-           $sender = Service::DB()->from('users')->where('client_id', $payloads['uid'])->first();
 
-           $data = [
-               'sender_id' => $sender->id,
-               'receiver_id' => $receiver->id,
-               'message' => $payloads['text'],
+      switch ($payload->intent) {
 
-           ];
+        case 'authenticate':
+          if (!$user = $this->authenticate($payload->uid)) {
+            $connection->close();
+          }
+          Service::DB()->from('users')->where('id', $user->id)->update(['resource' => $connection->resourceId()]);
+          $connection->assign('user', $user);
+          $connection->write(['alert' => 'User successfully verified.', 'status' => 'VERIFIED']);
+        break;
 
-           $payloads['from'] = $sender->username;
+        case 'communicate':
+          if (!$user = $connection->get('user', false)) {
+            $connection->close();
+          }
 
-           $payloads['cid'] = $receiver->client_id;
+          $receiver = Service::DB()->from('users')->where('id', $payload->receiver_id)->first();
+          $data = ['receiver_id' => $receiver->id, 'sender_id' => $user->id, 'message' => $payload->text];
+          Service::DB()->table('chat_history')->insert($data);
+          $connection->forward($receiver->resource, ['from' => $user->username, 'resource' => $user->resource, 'text' => $payload->text, 'sender_id' => $user->id]);
+        break;
 
-           unset($payloads['uid']);
+      }
 
-           Service::DB()->table('chat_history')->insert($data);
-        
-           return $payloads;
-            
-        }
+       
 
-        return false;
+
+    }
+
+    public function authenticate($id) {
+      return Service::DB()->from('users')->where('id', $id)->first();
     }
 
 

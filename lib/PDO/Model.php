@@ -38,6 +38,16 @@ class Model {
 
 	}
 
+	public function toArray() {
+		$array = [];
+
+		foreach (array_keys($this->attributes) as $key) {
+			$array[$key] = $this->__get($key);
+		}
+
+		return $array;
+	}
+
 	public function __toString() {
 		return json_encode($this->attributes);
 	}

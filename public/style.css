@@ -1,0 +1,52 @@
+ html, body {
+            font: normal 13px arial, helvetica;
+            margin: 0;
+            padding: 0;
+        }
+
+     
+
+
+        #log {
+            float: left;
+            width: 100%;
+            height: 300px;
+            border: 1px solid #7F9DB9;
+            overflow-x: scroll;
+            margin-bottom: 20px;
+        }
+
+
+
+        .pad-20 {
+            padding: 20px;
+        }
+
+        #clients {
+            border: 1px solid #7F9DB9;
+            height: 300px;
+            margin: 0;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #clients li {
+            padding: 10px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        #clients li.selected {
+            color: #222;
+            background-color: #e7e7e7;
+        }
+
+        .msg-line {
+            background: #f7f7f7 none repeat scroll 0 0;
+            display: inline-block;
+            float: left;
+            line-height: 15px;
+            margin: 0;
+            padding: 0.50%;
+            width: 99%;
+        }

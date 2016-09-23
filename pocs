@@ -4,7 +4,7 @@
  * PHP Open Chat Server - A PHP Framework For Chating Applications
  *
  * @package POCS
- * @version 1.1
+ * @version 1.2
  * @author Harcharan Singh <artisangang@gmail.com>
  * @link https://github.com/artisangang/pocs
  */
@@ -13,7 +13,7 @@
 define('BASEDIR', __DIR__);
 
 // pocs version
-define('VER', '1.0');
+define('VER', '1.2');
 
 // turn on error reporting
 error_reporting(E_ALL);
@@ -36,17 +36,18 @@ $autoload->add('POCS\\Lib\\', BASEDIR . '/lib/');
 // register autoloader
 $autoload->register();
 
-// create console request
-$console = \POCS\Core\Console::instance($argv);
+// create application
+$app = new \POCS\Core\Application($argv);
 
-// unset default cli $argb
+$request = $app->request();
+
+
+// unset default cli $argv
 unset($argv);
 
-// create config
-$config = \POCS\Core\Config::instance();
 
 // turn off error reporting if debug is false or -d flag is not present
-if (!$console->flags('d') && !$config->get('debug', false)) {
+if (!$request->flags('d') && !config('debug', false)) {
     error_reporting(0);
 }
 
@@ -59,7 +60,8 @@ if (!empty($providers)) {
 }
 
 // create server instance
-$server = new \POCS\Core\Server($console);
+$server = new \POCS\Core\Server($app);
+
 
 // lets start server
 $server->lift();

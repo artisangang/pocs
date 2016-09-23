@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 10, 2016 at 07:39 PM
+-- Generation Time: Sep 23, 2016 at 11:12 PM
 -- Server version: 10.1.16-MariaDB
 -- PHP Version: 5.6.24
 
@@ -34,14 +34,6 @@ CREATE TABLE `chat_history` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `chat_history`
---
-
-INSERT INTO `chat_history` (`id`, `receiver_id`, `sender_id`, `message`, `created_at`) VALUES
-(1, 1, 2, 'hello', '2016-09-10 13:04:45'),
-(2, 2, 1, 'Hi how are you?', '2016-09-10 13:04:57');
-
 -- --------------------------------------------------------
 
 --
@@ -53,7 +45,7 @@ CREATE TABLE `users` (
   `username` varchar(20) NOT NULL,
   `password` varchar(100) NOT NULL,
   `email` varchar(200) NOT NULL,
-  `client_id` varchar(40) DEFAULT NULL,
+  `resource` varchar(40) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -61,10 +53,11 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `email`, `client_id`, `created_at`) VALUES
-(1, 'harry', '$2y$10$wCscaY9amNr1lxj4aCWgWO9B05G1Q/.jNjkU7j/Ov9j8diE.yJdcu', 'harry@yopmail.com', 'C57d4437d9306f', '2016-09-09 13:11:33'),
-(2, 'nitin', '$2y$10$wCscaY9amNr1lxj4aCWgWO9B05G1Q/.jNjkU7j/Ov9j8diE.yJdcu', 'nitin@yopmail.com', 'C57d4438629754', '2016-09-09 13:11:33'),
-(3, 'aman', '$2y$10$wCscaY9amNr1lxj4aCWgWO9B05G1Q/.jNjkU7j/Ov9j8diE.yJdcu', 'aman@yopmail.com', 'C57d440588c756', '2016-09-09 13:12:11');
+INSERT INTO `users` (`id`, `username`, `password`, `email`, `resource`, `created_at`) VALUES
+(1, 'harry', '$2y$10$wCscaY9amNr1lxj4aCWgWO9B05G1Q/.jNjkU7j/Ov9j8diE.yJdcu', 'harry@yopmail.com', '57e59987e5344', '2016-09-09 13:11:33'),
+(2, 'nitin', '$2y$10$wCscaY9amNr1lxj4aCWgWO9B05G1Q/.jNjkU7j/Ov9j8diE.yJdcu', 'nitin@yopmail.com', '57e59988d30be', '2016-09-09 13:11:33'),
+(3, 'aman', '$2y$10$wCscaY9amNr1lxj4aCWgWO9B05G1Q/.jNjkU7j/Ov9j8diE.yJdcu', 'aman@yopmail.com', '57e5999a4bf30', '2016-09-09 13:12:11'),
+(5, 'motu', '$2y$10$wCscaY9amNr1lxj4aCWgWO9B05G1Q/.jNjkU7j/Ov9j8diE.yJdcu', 'motu@yopmail.com', '57e5887f090b1', '2016-09-11 14:16:15');
 
 --
 -- Indexes for dumped tables
@@ -93,12 +86,12 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `chat_history`
 --
 ALTER TABLE `chat_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2383;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- Constraints for dumped tables
 --

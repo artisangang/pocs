@@ -1,5 +1,7 @@
 <?php
 
+//  for development purpose of PDO Lib
+
 define('BASEDIR', __DIR__);
 
 

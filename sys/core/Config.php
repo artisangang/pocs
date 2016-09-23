@@ -1,6 +1,6 @@
 <?php namespace POCS\Core;
 
-
+use \POCS\Core\Console\Request;
 /**
  * Class Config
  * @package POCS\Core
@@ -43,7 +43,7 @@ class Config
 
         if (!empty($this->config['env'])) {
 
-            $env = Console::instance()->options('env', array_get($config, 'mode', 'dev'));
+            $env = Request::instance()->options('env', array_get($config, 'mode', 'dev'));
 
             if (!isset($this->config['env'][$env])) {
                 throw new \InvalidArgumentException("Invalid environment {$env}");

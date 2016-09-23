@@ -1,4 +1,8 @@
-<?php error_reporting(E_ALL);
+<?php 
+
+session_start();
+
+error_reporting(E_ALL);
 
 
  define('BASEDIR', __DIR__ . '/..');
@@ -33,11 +37,29 @@ if (!empty($_GET['get'])) {
 
 
         header('Content-Type: application/json');
-        echo json_encode($messages->fetchAll());
+        $messages = $messages->fetchAll();
+        if (!empty($messages)) {
+            
+            $message_final = [];
+
+            for($i=(count($messages)-1); $i>=0; $i--) {
+                    array_push($message_final, $messages[$i]);
+            }
+
+            $messages = $message_final;
+
+        }
+        echo json_encode($messages, true);
         exit;
         
     }
 
+}
+
+if (isset($_GET['logout'])) {
+    session_destroy();
+      header('location: index.php');
+      exit;
 }
 
 if ($_POST) {
@@ -48,9 +70,10 @@ if ($_POST) {
         if (!$user || !password_verify($_POST['password'], $user->password)) {
             unset($_SESSION['user']);
             header('location: index.php');
-            echo '<script> window.location = "index.php"; </script>';
             exit;
         }
+
+        $_SESSION['user'] = $user->toArray();
        
         header('location: index.php?user='.$user->id);
         echo '<script> window.location = "index.php?user='.$user->id.'"; </script>';
@@ -65,109 +88,54 @@ if ($_POST) {
 <head>
     <meta charset="utf-8">
     <title>PHP Open Chat Server</title>
-    <style type="text/css">
-        html, body {
-            font: normal 13px arial, helvetica;
-            margin: 0;
-            padding: 0;
-        }
-
-        h3 {
-            float: left;
-            width: 100%;
-            display: block;
-            padding: 10px;
-        }
-
-        #col-left {
-            float: left;
-            width: 70%;
-            height: 100%;
-
-        }
-
-        #col-right {
-            float: left;
-            width: 30%;
-            height: 100%;
-
-        }
-
-        #log {
-            float: left;
-            width: 100%;
-            height: 300px;
-            border: 1px solid #7F9DB9;
-            overflow-x: scroll;
-        }
-
-        #msg {
-            width: 99%;
-            float: left;
-        }
-
-
-
-        .pad-20 {
-            padding: 20px;
-        }
-
-        #clients {
-            border: 1px solid #7F9DB9;
-            height: 300px;
-            margin: 0;
-            list-style: none;
-            padding-left: 0;
-        }
-
-        #clients li {
-            padding: 10px;
-            color: #ccc;
-            cursor: pointer;
-        }
-
-        #clients li.selected {
-            color: #222;
-            background-color: #e7e7e7;
-        }
-
-        .msg-line {
-            background: #f7f7f7 none repeat scroll 0 0;
-            display: inline-block;
-            float: left;
-            line-height: 15px;
-            margin: 0;
-            padding: 0.50%;
-            width: 99%;
-        }
-    </style>
-
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="style.css" type="text/css" rel="stylesheet">
 
 </head>
-<body onload="init()">
+<body>
 
-<h3>POCS v1.0</h3>
+<header id="top" class="bs-docs-nav navbar navbar-static-top navbar-inverse">
+<div class="container-fluid">
+    <div class="navbar-header"> 
+        <a class="navbar-brand" href="index.php">POCS v1.0</a>
+    </div>
+    <?php if (!empty($_SESSION['user'])) : ?>
+    <nav id="bs-navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="index.php?logout" class="pull-right">Logout!</a></li> 
+        </ul>
+    </nav>
+    <?php endif; ?>
+</div>
+</header>
 
-<?php if (empty($_GET['user'])) : ?>
+<div class="container-fluid">
 
-    <form style="padding:20px" method="post">
-        <input type="text" name="username" placeholder="Your username"><br>
-        <input type="password" name="password"><br>
-        <button type="submit">Login</button>
-    </form>
+<?php if (empty($_SESSION['user'])) : ?>
 
+    <div class="col-sm-12">
 
+        <div class="col-sm-4 col-sm-offset-4">
+            <form class="form-horizontal" method="post">
+
+            <h4>Please provide your login credentials</h4>
+
+                <input type="text" name="username" placeholder="Your username" class="form-control"><br>
+                <input type="password" name="password" class="form-control" placeholder="Your password"><br>
+                <button type="submit" class="btn  btn-primary">Login</button>
+            </form>
+        </div>
+
+    </div>
 <?php else: ?>    
 
   <?php
 
-        $user = \POCS\Core\Service::DB()->from('users')->where('id', $_GET['user'])->first();
 
+        $user = \POCS\Core\Service::DB()->from('users')->where('id', $_SESSION['user']['id'])->first();
         $uid = $user->id;
-
         if (!$user) {
-            header('location: index.php');
-            echo '<script> window.location = "index.php"; </script>';
+            header('location: index.php?err=u404');
             exit;
         }
 
@@ -175,213 +143,55 @@ if ($_POST) {
 
     ?>
 
-<div id="col-left">
+<div class="col-sm-9 col-xs-8">
 
-    <div class="pad-20">
+        
+
         <div id="log"></div>
 
         <div>
-            <input id="msg" type="textbox" onkeypress="onkey(event)" placeholder="Type your message here...">
+        <div class="clearfix">
+        <br>
         </div>
-        <br><br>
-        <button onclick="send()">send</button>
-        <button onclick="quit()">Quit</button>
-    </div>
+            <div id="statusTxt" class="alert hidden"></div>
+            <div class="input-group">
+                <input id="msg" type="textbox" onkeypress="onkey(event)" placeholder="Type your message here..."  class="form-control">
+                <span class="input-group-btn">
+                    <button onclick="send()" class="btn btn-primary">send</button>
+                </span>
+            </div>
+        </div>
+   
 </div>
 
-<div id="col-right">
-    <div class="pad-20">
+<div class="col-sm-3 col-xs-4">
+    
         <ul id="clients">
 
         <?php if (!empty($users)) : ?>
-
-            <?php  foreach ($users  as $user): ?>
-                <li data-user="<?= $user->id ?>" id="user-<?= $user->id  ?>" class="connect-user"><?= $user->username ?></li>
+            
+            <?php  foreach ($users as $user): ?>
+                <li data-id="<?= $user->id ?>" id="user-<?= $user->id  ?>" class="connect-user"><?= $user->username ?></li>
             <?php endforeach; ?>
 
         <?php endif; ?>
 
         </ul>
-    </div>
+
 </div>
 
-<script src="jquery-1.12.4.min.js"></script>
 
+<script src="jquery-1.12.4.min.js"></script>
 <script type="text/javascript">
 
     // uid  is sender and  cid is receiver
-    var socket, uid, receiver, sender = <?= $uid ?>;
+   var uid = <?= $uid ?>, host = '<?= config('ip') ?>', port = <?= config('port') ?>;
+   
 
-    $(".connect-user").click(function () {
-        receiver = $(this).data('user');
-        $.ajax({
-            url:'index.php',
-            type:'get',
-            data: {get:'chat', user: <?= $uid ?>, 'receiver': receiver},
-            success: function (o) {
-                $('#log').html('');
-                if (o.length) {
-                    for (var i in o) {
-                       
-                        log(o[i].sender_username + ': ' + o[i].message);
-                    }
-                }
-
-               
-
-            }
-
-        });
-    });
-
-  
- 
-    function init() {
-        var host = "ws://127.0.0.1:9000/user/<?= $uid; ?>";
-        try {
-            socket = new WebSocket(host);
-            log('Connecting to server please wait...');
-
-            socket.onopen = function () {
-                log('Handshake successfully done...');
-            };
-
-
-            socket.onmessage = function (e) {
-
-                var payloads = JSON.parse(e.data);
-
-                if (typeof uid == 'undefined') {
-                    uid = payloads.uid;
-                }
-
-                var from = (typeof payloads.from != 'undefined') ? payloads.from : payloads.cid;
-
-                if (typeof from == 'undefined') {
-                    from = 'Server';
-                }
-
-                var message = from +': ' + payloads.text;
-                log(message);
-
-                $("#log").scrollTop($("#log")[0].scrollHeight);
-
-            };
-
-
-            socket.onclose = function (event) {
-
-
-                var reason;
-
-                // See http://tools.ietf.org/html/rfc6455#section-7.4.1
-                if (event.code == 1000)
-                    reason = "Normal closure, meaning that the purpose for which the connection was established has been fulfilled.";
-                else if (event.code == 1001)
-                    reason = "An endpoint is \"going away\", such as a server going down or a browser having navigated away from a page.";
-                else if (event.code == 1002)
-                    reason = "An endpoint is terminating the connection due to a protocol error";
-                else if (event.code == 1003)
-                    reason = "An endpoint is terminating the connection because it has received a type of data it cannot accept (e.g., an endpoint that understands only text data MAY send this if it receives a binary message).";
-                else if (event.code == 1004)
-                    reason = "Reserved. The specific meaning might be defined in the future.";
-                else if (event.code == 1005)
-                    reason = "No status code was actually present.";
-                else if (event.code == 1006)
-                    reason = "The connection was closed abnormally, e.g., without sending or receiving a Close control frame";
-                else if (event.code == 1007)
-                    reason = "An endpoint is terminating the connection because it has received data within a message that was not consistent with the type of the message (e.g., non-UTF-8 [http://tools.ietf.org/html/rfc3629] data within a text message).";
-                else if (event.code == 1008)
-                    reason = "An endpoint is terminating the connection because it has received a message that \"violates its policy\". This reason is given either if there is no other sutible reason, or if there is a need to hide specific details about the policy.";
-                else if (event.code == 1009)
-                    reason = "An endpoint is terminating the connection because it has received a message that is too big for it to process.";
-                else if (event.code == 1010) // Note that this status code is not used by the server, because it can fail the WebSocket handshake instead.
-                    reason = "An endpoint (client) is terminating the connection because it has expected the server to negotiate one or more extension, but the server didn't return them in the response message of the WebSocket handshake. <br /> Specifically, the extensions that are needed are: " + event.reason;
-                else if (event.code == 1011)
-                    reason = "A server is terminating the connection because it encountered an unexpected condition that prevented it from fulfilling the request.";
-                else if (event.code == 1015)
-                    reason = "The connection was closed due to a failure to perform a TLS handshake (e.g., the server certificate can't be verified).";
-                else
-                    reason = "Unknown reason";
-
-                log("Disconnected: [" + event.code + "] " + reason);
-
-            };
-
-        }
-        catch (ex) {
-            log(ex);
-        }
-
-
-    }
-
-    function send(message) {
-
-        if (typeof message == 'undefined') {
-            var txt, msg;
-            txt = $("#msg");
-            msg = txt.val();
-            
-            if (!receiver) {
-                alert("Please select user first");
-                return;
-            }
-
-            if (!msg) {
-                alert("Message can not be empty");
-                return;
-            }
-
-
-            txt.value = "";
-            txt.focus();
-        } else {
-            msg = message;
-        }
-
-        try {
-            var payload = {
-                'receiver': receiver, // receiver
-                'uid': uid, // sender
-                'sender': sender,
-                text: msg
-            };
-
-            socket.send(JSON.stringify(payload));
-
-            log('you: ' + msg);
-            $("#log").scrollTop($("#log")[0].scrollHeight);
-
-        } catch (ex) {
-            log(ex);
-        }
-    }
-
-
-
-    function quit() {
-        if (socket != null) {
-            log("Goodbye!");
-            socket.close();
-            socket = null;
-        }
-    }
-
-
-    // Utilities
-
-    function log(msg) {
-        $("#log").append('<p class="msg-line">' + msg + '</p>');
-    }
-    function onkey(event) {
-        if (event.keyCode == 13) {
-            send();
-        }
-    }
 </script>
+<script src="websocket.js"></script>
 
 <?php endif; ?>
-
+</div>
 </body>
 </html>
